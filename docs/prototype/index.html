@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprout prototype</title>
+<!-- Throwaway clickable prototype made with /ui-prototype. Fake data, nothing is really saved.
+     The real app is Java Swing; this file only exists to click through the plan before building it. -->
+<style>
+  body { font-family: system-ui, Segoe UI, Arial, sans-serif; background: #d9dde1; margin: 0; padding: 16px; color: #222; }
+  .window { max-width: 980px; margin: 0 auto; background: #f4f4f4; border: 1px solid #888; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,.2); overflow: hidden; }
+  .titlebar { background: linear-gradient(#e8e8e8, #cfcfcf); padding: 6px 10px; font-size: 13px; border-bottom: 1px solid #999; }
+  .titlebar span { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid #ccc; }
+  .bar label { font-size: 13px; }
+  button { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid #888; border-radius: 4px; background: #fff; cursor: pointer; }
+  button:hover { background: #eef4ff; }
+  input, select { font: inherit; font-size: 13px; padding: 3px 5px; border: 1px solid #999; border-radius: 3px; }
+  .tablewrap { overflow-x: auto; background: #fff; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #e2e2e2; white-space: nowrap; }
+  th { background: #ececec; }
+  tr.OVERDUE td { background: #ffd6d6; }
+  tr.DUE td { background: #fff3c4; }
+  tr.selected td { outline: 2px solid #2b6cd4; outline-offset: -2px; }
+  tbody tr { cursor: pointer; }
+  .summary { padding: 6px 10px; font-size: 13px; border-top: 1px solid #ccc; background: #ececec; }
+  .status { padding: 6px 10px; font-size: 13px; min-height: 18px; border-top: 1px solid #ccc; }
+  .status.error { color: #b00020; font-weight: 600; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: none; align-items: center; justify-content: center; padding: 16px; }
+  .dialog { background: #f4f4f4; border: 1px solid #888; border-radius: 6px; min-width: 280px; max-width: 420px; width: 100%; }
+  .dialog .body { padding: 12px; display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center; font-size: 13px; }
+  .dialog .err { grid-column: 1 / -1; color: #b00020; font-weight: 600; min-height: 16px; }
+  .dialog .buttons { padding: 0 12px 12px; text-align: right; }
+  .note { max-width: 980px; margin: 10px auto 0; font-size: 12px; color: #555; }
+</style>
+</head>
+<body>
+<div class="window">
+  <div class="titlebar"><span style="background:#ff5f57"></span><span style="background:#febc2e"></span><span style="background:#28c840"></span> Sprout - Plant Care Tracker</div>
+  <div class="bar">
+    <strong id="day"></strong> <button onclick="advanceDay()">Next Day</button>
+    <label>Search: <input id="search" oninput="render()" placeholder="name"></label>
+    <label>Room: <select id="room" onchange="render()"></select></label>
+    <label>Status: <select id="statusFilter" onchange="render()">
+      <option>All</option><option>OVERDUE</option><option>DUE TODAY</option><option>OK</option></select></label>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Name</th><th>Species</th><th>Room</th><th>Every</th><th>Last watered</th><th>Next</th><th>Status</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+  <div class="bar">
+    <button onclick="openPlantForm(false)">Add</button>
+    <button onclick="openPlantForm(true)">Edit</button>
+    <button onclick="removePlant()">Remove</button>
+    <button onclick="waterToday()">Water Today</button>
+    <button onclick="openLogCare()">Log Care...</button>
+    <button onclick="showHistory()">History</button>
+  </div>
+  <div class="summary" id="summary"></div>
+  <div class="status" id="status">Prototype: fake data, nothing is really saved.</div>
+</div>
+<p class="note">Throwaway prototype for clicking through the plan. The real app is Java Swing.</p>
+
+<div class="overlay" id="overlay"><div class="dialog">
+  <div class="titlebar" id="dlgTitle"></div>
+  <div class="body" id="dlgBody"></div>
+  <div class="buttons" id="dlgButtons"></div>
+</div></div>
+
+<script>
+let today = 12;
+let selected = null;
+const plants = [
+  { name: "Monty", species: "Monstera", room: "Living Room", every: 7, last: 6, history: [[6, "Water", "soaked it"], [8, "Fertilize", "half strength"]] },
+  { name: "Basil", species: "Sweet Basil", room: "Kitchen", every: 2, last: 9, history: [[7, "Water", ""], [9, "Water", ""]] },
+  { name: "Spike", species: "Snake Plant", room: "Bedroom", every: 14, last: 1, history: [[1, "Water", ""]] },
+  { name: "Peace", species: "Peace Lily", room: "Office", every: 4, last: 8, history: [[4, "Water", ""], [8, "Water", "leaves were droopy"]] },
+  { name: "Fernando", species: "Boston Fern", room: "Bathroom", every: 3, last: 7, history: [[5, "Repot", "bigger pot"], [7, "Water", ""]] },
+  { name: "Pip", species: "Pothos", room: "Office", every: 7, last: 10, history: [[10, "Water", ""]] }
+];
+
+// Rules (same as docs/02-project-plan.md "Rules I decided")
+function nextWater(p) { return p.last + p.every; }
+function statusOf(p) { const n = nextWater(p); return n < today ? "OVERDUE" : n === today ? "DUE TODAY" : "OK"; }
+function plural(n) { return n + (n === 1 ? " day" : " days"); }
+function find(name) { return plants.find(p => p.name.toLowerCase() === name.trim().toLowerCase()); }
+function checkPlant(name, room, every, last, editing) {
+  name = name.trim();
+  if (name.length < 1 || name.length > 30) return "Name must be 1–30 characters.";
+  if ([name, room].some(s => s.includes("|"))) return "Names and rooms can't contain |.";
+  const other = find(name);
+  if (other && other !== editing) return "There's already a plant named " + other.name + ".";
+  if (!(every >= 1 && every <= 60)) return "Watering interval must be 1–60 days.";
+  if (!(last >= 1 && last <= today)) return "Last watered must be between Day 1 and today (Day " + today + ").";
+  return "OK";
+}
+
+function say(msg, isError) {
+  const s = document.getElementById("status");
+  s.textContent = msg + (isError ? "" : "  (auto-saved — not really, prototype)");
+  s.className = "status" + (isError ? " error" : "");
+}
+function needSelection() { if (!selected) { say("Select a plant first.", true); return true; } return false; }
+
+function render() {
+  document.getElementById("day").textContent = "Today: Day " + today;
+  const roomSel = document.getElementById("room"), current = roomSel.value || "All";
+  const rooms = ["All", ...new Set(plants.map(p => p.room))];
+  roomSel.innerHTML = rooms.map(r => "<option>" + r + "</option>").join("");
+  roomSel.value = rooms.includes(current) ? current : "All";
+  const text = document.getElementById("search").value.trim().toLowerCase();
+  const st = document.getElementById("statusFilter").value;
+  const rows = plants.filter(p => p.name.toLowerCase().includes(text)
+    && (roomSel.value === "All" || p.room === roomSel.value) && (st === "All" || statusOf(p) === st));
+  document.getElementById("rows").innerHTML = rows.map(p => {
+    const s = statusOf(p), cls = (s === "OVERDUE" ? "OVERDUE" : s === "DUE TODAY" ? "DUE" : "") + (p === selected ? " selected" : "");
+    const late = s === "OVERDUE" ? " (" + plural(today - nextWater(p)) + ")" : "";
+    return `<tr class="${cls}" onclick="selectPlant('${p.name}')"><td>${p.name}</td><td>${p.species}</td><td>${p.room}</td>` +
+      `<td>${p.every} days</td><td>Day ${p.last}</td><td>Day ${nextWater(p)}</td><td>${s}${late}</td></tr>`;
+  }).join("") || `<tr><td colspan="7">No plants match.</td></tr>`;
+  const overdue = plants.filter(p => statusOf(p) === "OVERDUE");
+  let most = null;
+  overdue.forEach(p => { if (!most || nextWater(p) < nextWater(most)) most = p; });
+  const waterings = plants.reduce((n, p) => n + p.history.filter(e => e[1] === "Water" && e[0] > today - 7).length, 0);
+  document.getElementById("summary").textContent = `Plants: ${plants.length} | Overdue: ${overdue.length} | Due today: ` +
+    `${plants.filter(p => statusOf(p) === "DUE TODAY").length} | Waterings (7 days): ${waterings} | Most overdue: ` +
+    (most ? most.name + " (" + plural(today - nextWater(most)) + ")" : "None");
+}
+function selectPlant(name) { selected = find(name); render(); }
+
+// Dialogs
+function dialog(title, fields, onOk) {
+  document.getElementById("dlgTitle").textContent = title;
+  document.getElementById("dlgBody").innerHTML = fields + '<div class="err" id="dlgErr"></div>';
+  document.getElementById("dlgButtons").innerHTML = onOk
+    ? '<button id="ok">OK</button> <button onclick="closeDialog()">Cancel</button>' : '<button onclick="closeDialog()">OK</button>';
+  if (onOk) document.getElementById("ok").onclick = () => {
+    const msg = onOk();
+    if (msg === "OK") closeDialog(); else document.getElementById("dlgErr").textContent = msg;
+  };
+  document.getElementById("overlay").style.display = "flex";
+}
+function closeDialog() { document.getElementById("overlay").style.display = "none"; }
+function val(id) { return document.getElementById(id).value; }
+
+function openPlantForm(editing) {
+  if (editing && needSelection()) return;
+  const p = editing ? selected : { name: "", species: "", room: "", every: 7, last: today };
+  dialog(editing ? "Edit Plant" : "Add Plant",
+    `<label>Name:</label><input id="f-name" value="${p.name}">
+     <label>Species:</label><input id="f-species" value="${p.species}">
+     <label>Room:</label><input id="f-room" value="${p.room}">
+     <label>Water every (days):</label><input id="f-every" type="number" value="${p.every}">
+     <label>Last watered (day):</label><input id="f-last" type="number" value="${p.last}">`,
+    () => {
+      const every = Number(val("f-every")), last = Number(val("f-last"));
+      const msg = checkPlant(val("f-name"), val("f-room"), every, last, editing ? selected : null);
+      if (msg !== "OK") return msg;
+      const target = editing ? selected : { history: [] };
+      Object.assign(target, { name: val("f-name").trim(), species: val("f-species").trim(), room: val("f-room").trim(), every, last });
+      if (!editing) plants.push(target);
+      selected = target; render(); say((editing ? "Saved changes to " : "Added ") + target.name + ".");
+      return "OK";
+    });
+}
+function removePlant() {
+  if (needSelection()) return;
+  const p = selected;
+  dialog("Remove Plant", `<span style="grid-column:1/-1">Remove ${p.name} and its ${p.history.length} care event${p.history.length === 1 ? "" : "s"}?</span>`, () => {
+    plants.splice(plants.indexOf(p), 1); selected = null; render(); say("Removed " + p.name + "."); return "OK";
+  });
+}
+function addEvent(p, day, type, note) {
+  p.history.push([day, type, note]);
+  p.history.sort((a, b) => a[0] - b[0]);
+  if (type === "Water" && day > p.last) p.last = day;   // older waterings never move last-watered backward
+}
+function waterToday() {
+  if (needSelection()) return;
+  addEvent(selected, today, "Water", ""); render(); say("Watered " + selected.name + " on Day " + today + ".");
+}
+function openLogCare() {
+  if (needSelection()) return;
+  const p = selected;
+  dialog("Log Care: " + p.name,
+    `<label>Type:</label><select id="c-type"><option>Water</option><option>Fertilize</option><option>Repot</option></select>
+     <label>Day:</label><input id="c-day" type="number" value="${today}">
+     <label>Note:</label><input id="c-note">`,
+    () => {
+      const day = Number(val("c-day")), note = val("c-note");
+      if (!(day >= 1 && day <= today)) return "Care day must be between Day 1 and today (Day " + today + ").";
+      if (note.includes("|")) return "Notes can't contain |.";
+      addEvent(p, day, val("c-type"), note.trim()); render(); say("Logged " + val("c-type") + " for " + p.name + " on Day " + day + ".");
+      return "OK";
+    });
+}
+function showHistory() {
+  if (needSelection()) return;
+  const lines = selected.history.map(e => `Day ${e[0]} – ${e[1]}${e[2] ? " (" + e[2] + ")" : ""}`).join("<br>") || "No care logged yet.";
+  dialog("History: " + selected.name, `<span style="grid-column:1/-1">${lines}</span>`, null);
+}
+function advanceDay() { today++; render(); say("It's now Day " + today + "."); }
+render();
+</script>
+</body>
+</html>

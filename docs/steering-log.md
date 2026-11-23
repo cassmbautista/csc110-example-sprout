@@ -21,3 +21,24 @@ You'll use these in your write-up and slides. Template:
   I also cut "photo of each plant" because it's mostly graphics with no rules behind it.
 - **What I learned:** Dealer's Choice ideas need rules that keep data consistent, not just a list of things.
 - **Next:** /project-plan
+
+## Nov 24 — Project plan + class design
+- **Goal:** Plan the features and design the classes.
+- **What I asked for:** /project-plan, then /class-design.
+- **How I steered / corrected Claude:** Claude's first design had a separate `CareLog` class holding every event for
+  every plant. I asked what happens when you rename a plant, since the events would point at the old name. We moved
+  history inside `Plant` instead (D4). I also said no to exceptions for validation, since we haven't learned them, and we
+  used returned messages (D3).
+- **What I learned:** Where data lives decides how hard the consistency rules are.
+- **Next:** /ui-prototype
+
+## Nov 25 — UI prototype
+- **Goal:** A clickable prototype to test my plan before writing any Java UI.
+- **What I asked for:** /ui-prototype with one main window, not a bunch of pop-ups.
+- **How I steered / corrected Claude:** Claude made an HTML version of the app with fake plants, and I clicked through
+  my whole test checklist in it. Logging an old watering moved "Last watered" backward, so we added a rule that it only
+  moves forward (D7). Claude's first version also had a confirmation pop-up after every watering; I asked for a
+  Water Today button and a status-line message instead.
+- **What I learned:** Clicking through a fake version found two rule problems my plan missed, and fixing them in
+  HTML took minutes instead of rewriting Java.
+- **Next:** /build-feature for the Garden rules.
