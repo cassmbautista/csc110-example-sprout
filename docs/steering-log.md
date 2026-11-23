@@ -42,3 +42,12 @@ You'll use these in your write-up and slides. Template:
 - **What I learned:** Clicking through a fake version found two rule problems my plan missed, and fixing them in
   HTML took minutes instead of rewriting Java.
 - **Next:** /build-feature for the Garden rules.
+
+## Nov 30 — Garden rules (F2, F3, F4, F8)
+- **Goal:** Build `Plant`, `CareEvent`, `Garden` with tests first.
+- **What I asked for:** /build-feature for the rules, tests first.
+- **How I steered / corrected Claude:** While reading the tests I asked "what if I log an old watering from last week?" Claude's
+  plan would have moved last-watered *backward*. We added the rule "watering only moves forward" and a test for it
+  (`oldWateringDoesNotMoveLastWateredBackward`). Claude also wanted 15+ tests. I asked for one or two per rule to save usage, and we ended up with 7.
+- **What I learned:** `existing != editing` compares *objects*, not names. That's how editing "Monty" doesn't count as a duplicate of itself.
+- **Next:** save/load
