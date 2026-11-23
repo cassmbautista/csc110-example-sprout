@@ -11,3 +11,6 @@ Thumbs.db
 # Claude Code personal files (never commit)
 .claude/settings.local.json
 .claude/.session-*
+
+# My own save file (the sample file is committed instead)
+data/garden.txt

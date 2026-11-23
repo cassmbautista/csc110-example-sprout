@@ -51,3 +51,13 @@ You'll use these in your write-up and slides. Template:
   (`oldWateringDoesNotMoveLastWateredBackward`). Claude also wanted 15+ tests. I asked for one or two per rule to save usage, and we ended up with 7.
 - **What I learned:** `existing != editing` compares *objects*, not names. That's how editing "Monty" doesn't count as a duplicate of itself.
 - **Next:** save/load
+
+## Dec 2 — Save/load + real UI (F1, F5, F6, F7)
+- **Goal:** Save/load, then build the Swing main window from the prototype and wire it to `Garden`.
+- **What I asked for:** /build-feature for save/load (with a round-trip test), then for the main window.
+- **How I steered / corrected Claude:** I asked "what happens if someone edits garden.txt in Notepad and breaks a line?"
+  The first version would crash on load, so now it skips broken lines. In the UI, Claude first validated the interval
+  inside `PlantForm`. I pointed out that rules belong in `Garden` (our design rule), so the form now only reads text
+  and `Garden` decides. I also caught "Most overdue: Basil (1 days)" and asked for correct grammar.
+- **What I learned:** The UI loop "show form → ask Garden → show error → show form again" keeps what the user typed.
+- **Next:** concept map, write-up, demo prep

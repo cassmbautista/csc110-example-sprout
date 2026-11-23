@@ -1,0 +1,17 @@
+TODAY|12
+PLANT|Monty|Monstera|Living Room|7|6
+EVENT|6|Water|soaked it
+EVENT|8|Fertilize|half strength
+PLANT|Basil|Sweet Basil|Kitchen|2|9
+EVENT|7|Water|
+EVENT|9|Water|
+PLANT|Spike|Snake Plant|Bedroom|14|1
+EVENT|1|Water|
+PLANT|Peace|Peace Lily|Office|4|8
+EVENT|4|Water|
+EVENT|8|Water|leaves were droopy
+PLANT|Fernando|Boston Fern|Bathroom|3|7
+EVENT|7|Water|
+EVENT|5|Repot|bigger pot
+PLANT|Pip|Pothos|Office|7|10
+EVENT|10|Water|

@@ -26,19 +26,19 @@
 
 ## Features by priority
 ### Must
-- [ ] F1 Plant table with Add / Edit / Remove
-- [ ] F2 Validation with clear messages
-- [ ] F3 Water (today) button + Log Care dialog
-- [ ] F4 History per plant + History view
-- [ ] F5 Search + room filter + status filter
-- [ ] F6 Summary bar
-- [ ] F7 Auto-save / load, with sample data
-- [ ] F8 Day counter + Next Day
+- [x] F1 Plant table with Add / Edit / Remove
+- [x] F2 Validation with clear messages
+- [x] F3 Water (today) button + Log Care dialog
+- [x] F4 History per plant + History view
+- [x] F5 Search + room filter + status filter
+- [x] F6 Summary bar
+- [x] F7 Auto-save / load, with sample data
+- [x] F8 Day counter + Next Day
 ### Should
-- [ ] Confirm before Remove ("This deletes 4 care events")
-- [ ] Error messages in a status line instead of lots of pop-ups
+- [x] Confirm before Remove ("This deletes 4 care events")
+- [x] Error messages in a status line instead of lots of pop-ups
 ### Could
-- [ ] Row colors for Overdue / Due Today (stretch goal)
+- [x] Row colors for Overdue / Due Today (stretch goal)
 - [ ] Undo last care event
 
 ## Build order
