@@ -1,0 +1,13 @@
+# Compiled output (rebuilt by run.sh / test.sh)
+out/
+bin/
+*.class
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.idea/
+
+# Claude Code personal files (never commit)
+.claude/settings.local.json
+.claude/.session-*
