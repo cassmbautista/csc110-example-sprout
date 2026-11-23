@@ -61,3 +61,12 @@ You'll use these in your write-up and slides. Template:
   and `Garden` decides. I also caught "Most overdue: Basil (1 days)" and asked for correct grammar.
 - **What I learned:** The UI loop "show form → ask Garden → show error → show form again" keeps what the user typed.
 - **Next:** concept map, write-up, demo prep
+
+## Dec 7 — Concept map, write-up, demo prep
+- **Goal:** Final docs and demo practice.
+- **What I asked for:** /concept-map, /final-writeup, /demo-prep.
+- **How I steered / corrected Claude:** Claude listed `MainWindow extends JFrame` under "Classes & objects". I moved it to
+  "Beyond CSC110" because we haven't learned inheritance. In practice Q&A I couldn't explain `existing != editing`,
+  so I ran /explain-it on `validatePlant` until I could.
+- **What I learned:** I can explain every class now, including what the Swing parts do even if I couldn't write them alone.
+- **Next:** demo on Dec 9

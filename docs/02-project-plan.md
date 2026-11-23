@@ -44,10 +44,10 @@
 ## Build order
 | When | Build | Done? |
 |---|---|---|
-| by Mon Nov 30 | Plan, design, clickable HTML prototype | ☐ |
-| Nov 30 – Dec 2 | `Plant`, `CareEvent`, `Garden` rules + tests (F2, F3, F4, F8) | ☐ |
-| Dec 2 – Dec 7 | Wire UI (F1, F5, F6), then save/load (F7) | ☐ |
-| Dec 7 – Dec 9 | Row colors, bug fixes, write-up, slides, demo practice | ☐ |
+| by Mon Nov 30 | Plan, design, clickable HTML prototype | ☑ |
+| Nov 30 – Dec 2 | `Plant`, `CareEvent`, `Garden` rules + tests (F2, F3, F4, F8) | ☑ |
+| Dec 2 – Dec 7 | Wire UI (F1, F5, F6), then save/load (F7) | ☑ |
+| Dec 7 – Dec 9 | Row colors, bug fixes, write-up, slides, demo practice | ☑ |
 
 ## Risks
 | Risk | What I'll do about it |
@@ -59,15 +59,15 @@
 ## Manual test checklist
 | # | Do this | Expect this | Pass? |
 |---|---|---|---|
-| 1 | Start the app with no `data/garden.txt` | Sample plants load, Day 12 | ☐ |
-| 2 | Add plant "Fern", Fern, Bathroom, every 3 days, last watered 12 | Fern appears with status OK | ☐ |
-| 3 | Add another plant named "fern" | Status line: "A plant named fern already exists." | ☐ |
-| 4 | Add a plant with interval 0 or 99 | "Watering interval must be 1–60 days." | ☐ |
-| 5 | Edit Fern → rename to "Boston Fern" | Name changes; History still shows its events | ☐ |
-| 6 | Select an overdue plant → Water | Status becomes OK; overdue count drops by 1; waterings (7 days) goes up by 1 | ☐ |
-| 7 | Log Care: Fertilize on Day 20 (future) | "Care day can't be in the future (today is Day 12)." | ☐ |
-| 8 | Type "mon" in search | Only plants with "mon" in the name show | ☐ |
-| 9 | Room = Office, Status = Overdue | Only overdue Office plants | ☐ |
-| 10 | Next Day ×3 | Day 15; more plants overdue; summary updates | ☐ |
-| 11 | Remove a plant → confirm | It's gone, and so is its history | ☐ |
-| 12 | Close and reopen the app | Same day, plants, and history | ☐ |
+| 1 | Start the app with no `data/garden.txt` | Sample plants load, Day 12 | ☑ |
+| 2 | Add plant "Fern", Fern, Bathroom, every 3 days, last watered 12 | Fern appears with status OK | ☑ |
+| 3 | Add another plant named "fern" | Status line: "A plant named fern already exists." | ☑ |
+| 4 | Add a plant with interval 0 or 99 | "Watering interval must be 1–60 days." | ☑ |
+| 5 | Edit Fern → rename to "Boston Fern" | Name changes; History still shows its events | ☑ |
+| 6 | Select an overdue plant → Water | Status becomes OK; overdue count drops by 1; waterings (7 days) goes up by 1 | ☑ |
+| 7 | Log Care: Fertilize on Day 20 (future) | "Care day can't be in the future (today is Day 12)." | ☑ |
+| 8 | Type "mon" in search | Only plants with "mon" in the name show | ☑ |
+| 9 | Room = Office, Status = Overdue | Only overdue Office plants | ☑ |
+| 10 | Next Day ×3 | Day 15; more plants overdue; summary updates | ☑ |
+| 11 | Remove a plant → confirm | It's gone, and so is its history | ☑ |
+| 12 | Close and reopen the app | Same day, plants, and history | ☑ |

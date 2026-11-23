@@ -44,6 +44,7 @@ classDiagram
     class GardenFileStore {
         +save(garden, fileName)$
         +load(fileName)$ Garden
+        +exists(fileName)$ boolean
     }
     class MainWindow
     class PlantForm
@@ -117,12 +118,12 @@ Mutating methods return `Garden.OK` or an error message the UI can show.
 **CSC110 concepts shown:** `ArrayList` traversal, searching, filtering into a new list, accumulators, validation with `if`.
 
 ### `GardenFileStore` (file store)
-**Responsibility:** save a `Garden` to a text file and load it back. Static methods. `// BEYOND CSC110:` file I/O + try/catch.
+**Responsibility:** save a `Garden` to a text file and load it back (`save`, `load`, `exists`). Static methods. Loading skips broken lines instead of crashing. `// BEYOND CSC110:` file I/O + try/catch.
 
 ### `MainWindow` (UI) and `PlantForm` (UI)
 `MainWindow` is the `JFrame`: top bar (Day, Next Day, search, filters), plant table, buttons, summary bar, status
 line. After every change it refreshes the table and summary and auto-saves. `PlantForm` is the add/edit form shown in
-a dialog. `// BEYOND CSC110:` Swing.
+a dialog; `PlantForm.readNumber` turns non-numbers into -1 so `Garden` rejects them. `// BEYOND CSC110:` Swing.
 
 ## Where the rules live
 | Rule | Class.method |
